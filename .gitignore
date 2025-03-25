@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 🔐 민감 정보 무시 ###
+# Spring Boot 설정 파일 (민감 정보 포함 가능)
+src/main/resources/application.properties
