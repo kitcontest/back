@@ -1,11 +1,13 @@
 package com.contest.contest.controller;
 
 import com.contest.contest.entity.Meeting;
+import com.contest.contest.service.MeetingApplicationService;  // 서비스 추가
 import com.contest.contest.service.MeetingService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/contests/{contestId}/meetings")
@@ -13,6 +15,9 @@ public class MeetingController {
 
   @Autowired
   private MeetingService meetingService;
+
+  @Autowired
+  private MeetingApplicationService meetingApplicationService;  // 서비스 주입
 
   /**
    * 특정 공모전에 대한 모임을 생성하는 API
@@ -44,6 +49,9 @@ public class MeetingController {
     List<Meeting> meetings = meetingService.getMeetingsByContestId(contestId);
     return ResponseEntity.ok(meetings);
   }
+
+
+
 
   // Meeting 생성 요청을 위한 DTO
   public static class MeetingRequest {
@@ -85,7 +93,5 @@ public class MeetingController {
       this.shareLink = shareLink;
     }
   }
-
-
 
 }

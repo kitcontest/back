@@ -1,7 +1,15 @@
 package com.contest.contest.service;
-
+import com.contest.contest.entity.Meeting;
+import com.contest.contest.entity.MeetingParticipant;
+import com.contest.contest.repository.MeetingRepository;
+import com.contest.contest.repository.MeetingParticipantRepository;
+import com.contest.contest.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.contest.contest.entity.Contest;
 import com.contest.contest.entity.Meeting;
+import com.contest.contest.entity.MeetingParticipant;
 import com.contest.contest.entity.User;
 import com.contest.contest.repository.ContestRepository;
 import com.contest.contest.repository.MeetingRepository;
@@ -9,6 +17,7 @@ import com.contest.contest.repository.UserRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MeetingService {
@@ -22,6 +31,8 @@ public class MeetingService {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private MeetingParticipantRepository meetingParticipantRepository;
   /**
    * 특정 공모전의 모임을 생성합니다.
    * @param contestId 공모전 ID
@@ -58,8 +69,23 @@ public class MeetingService {
    * @return 해당 공모전에 등록된 모든 모임 목록
    */
   public List<Meeting> getMeetingsByContestId(Long contestId) {
+    // 공모전 조회
     Contest contest = contestRepository.findById(contestId)
         .orElseThrow(() -> new RuntimeException("Contest not found"));
-    return meetingRepository.findByContest(contest);
+
+    // 공모전에 속한 모임들 조회
+    List<Meeting> meetings = meetingRepository.findByContest(contest);
+
+    // 각 모임에 대해 현재 인원수를 업데이트
+    for (Meeting meeting : meetings) {
+      // 승인된 참가자 수 계산
+      Integer approvedCount = meetingRepository.countApprovedParticipants(meeting.getMeetingId());
+      // 생성자 포함하여 계산
+      meeting.setCurrentParticipants(approvedCount + 1);  // 생성자 포함
+    }
+
+    return meetings;
   }
+
+
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "Meetings")
+@Table(name = "meetings")
 public class Meeting {
 
   @Id
@@ -25,6 +25,8 @@ public class Meeting {
 
   private Integer capacity;
 
+
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "creator_id", nullable = false)
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -38,6 +40,9 @@ public class Meeting {
 
   @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
+
+  @Column
+  private Integer currentParticipants = 1;
 
   // Getters and Setters
   public Long getMeetingId() {
@@ -94,4 +99,12 @@ public class Meeting {
   public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
+
+  public Integer getCurrentParticipants() {
+    return currentParticipants;
+  }
+  public void setCurrentParticipants(Integer currentParticipants) {
+    this.currentParticipants = currentParticipants;
+  }
+
 }

@@ -1,36 +1,48 @@
 package com.contest.contest.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MeetingParticipants")
+@Table(name = "meeting_participants")
 public class MeetingParticipant {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;  // 신청 내역의 고유 ID
+  @EmbeddedId
+  private MeetingParticipantId id = new MeetingParticipantId();
 
+  // 모임 (LAZY 로딩 시 직렬화 문제 방지를 위해 @JsonIgnoreProperties 추가)
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "meeting_id", nullable = false)
+  @MapsId("meetingId")
+  @JoinColumn(name = "meeting_id")
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private Meeting meeting;
 
+  // 사용자 (신청자)
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
+  @MapsId("userId")
+  @JoinColumn(name = "user_id")
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private User user;
 
-  // 신청 상태: "pending" (기본), "approved", "rejected"
-  @Column(length = 20, nullable = false)
-  private String status = "pending";
+  @Column(length = 20)
+  private String status = "pending";  // 신청대기 상태
 
   @Column(nullable = false)
   private LocalDateTime joinedAt = LocalDateTime.now();
 
-  // Getters and Setters
+  public MeetingParticipant() {}
 
-  public Long getId() {
+  public MeetingParticipant(Meeting meeting, User user) {
+    this.meeting = meeting;
+    this.user = user;
+    this.id = new MeetingParticipantId(meeting.getMeetingId(), user.getUserId());
+  }
+
+  public MeetingParticipantId getId() {
     return id;
   }
-  public void setId(Long id) {
+  public void setId(MeetingParticipantId id) {
     this.id = id;
   }
   public Meeting getMeeting() {
