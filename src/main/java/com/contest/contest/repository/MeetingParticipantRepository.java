@@ -2,6 +2,7 @@ package com.contest.contest.repository;
 
 import com.contest.contest.entity.MeetingParticipant;
 import com.contest.contest.entity.MeetingParticipantId;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,5 +31,14 @@ public interface MeetingParticipantRepository extends JpaRepository<MeetingParti
   @Modifying
   @Query("DELETE FROM MeetingParticipant mp WHERE mp.meeting.meetingId = :meetingId AND mp.status = 'rejected'")
   void deleteRejectedParticipants(Long meetingId);
+
+  // 특정 사용자가 참여한 모든 모임의 참가자 정보 삭제
+  @Modifying
+  @Query("DELETE FROM MeetingParticipant mp WHERE mp.user.userId = :userId")
+  void deleteByUser_UserId(Long userId);
+
+  // 특정 사용자가 참여한 모든 모임의 참가자 정보 조회
+  List<MeetingParticipant> findByUser_UserId(Long userId);
+
 
 }

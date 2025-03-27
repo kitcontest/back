@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/meetings/{meetingId}/apply")
+@CrossOrigin(origins = "http://localhost:127.0.0.1") // 리액트 개발 서버 주소
 public class MeetingApplicationController {
 
   @Autowired

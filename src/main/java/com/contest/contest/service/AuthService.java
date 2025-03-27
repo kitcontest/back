@@ -67,4 +67,29 @@ public class AuthService {
       throw new RuntimeException("No active login record found for logout");
     }
   }
+
+
+  /**
+   * 비밀번호 변경을 위한 메소드
+   * @param userId 사용자 ID
+   * @param oldPassword 기존 비밀번호
+   * @param newPassword 새로운 비밀번호
+   * @return 변경된 사용자
+   */
+  public User changePassword(Long userId, String oldPassword, String newPassword) {
+    // 사용자 조회
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // 기존 비밀번호와 입력한 비밀번호가 일치하는지 확인
+    if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+      throw new RuntimeException("Incorrect old password");
+    }
+
+    // 새 비밀번호로 변경
+    user.setPassword(passwordEncoder.encode(newPassword));
+
+    // 사용자 비밀번호 업데이트
+    return userRepository.save(user);
+  }
 }

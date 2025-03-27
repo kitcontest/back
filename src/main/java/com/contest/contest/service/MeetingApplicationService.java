@@ -116,6 +116,9 @@ public class MeetingApplicationService {
     Integer approvedCount = meetingRepository.countApprovedParticipants(meetingId);
     meeting.setCurrentParticipants(approvedCount);  // 생성자 포함된 인원 수
 
+    // 현재인원 수를 감소시켜야 할 경우
+    meeting.setCurrentParticipants(meeting.getCurrentParticipants() - 1);  // 인원 수 감소
+
     // 모임 상태를 다시 확인하여 'full' 상태가 아니면 'pending'으로 변경
     if (meeting.getCurrentParticipants() < meeting.getCapacity()) {
       meeting.setApprovalStatus("pending"); // 상태를 'pending'으로 변경

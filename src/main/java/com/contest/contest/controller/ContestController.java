@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/contests")
+@CrossOrigin(origins = "http://localhost:127.0.0.1") // 리액트 개발 서버 주소
 public class ContestController {
 
   @Autowired
